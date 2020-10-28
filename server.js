@@ -1,28 +1,23 @@
-var express = require('express');
-var { graphqlHTTP } = require('express-graphql');
-var { buildSchema } = require('graphql');
+import express from 'express';
+import { graphqlHTTP } from 'express-graphql';
+import { buildSchema } from 'graphql';
 
 // Construct a schema, using GraphQL schema language
-var schema = buildSchema(`
+const schema = buildSchema(`
   type Query {
-    rollThreeDice: [Int!]
+    rollDices(numDice: Int!): [Int!]
   }
 `);
 
 // The root provides a resolver function for each API endpoint
-var root = {
-    quoteOfTheDay: () => {
-        return Math.random() < 0.5 ? 'Take it easy' : 'Salvation lies within';
-    },
-    random: () => {
-        return Math.random();
-    },
-    rollThreeDice: () => {
-        return [1, 2, 3].map(_ => 1 + Math.floor(Math.random() * 6));
+const root = {
+    rollDices: (args) => {
+        console.info("[Query] rollDices", args);
+        return [...Array(args.numDice).keys()].map(_ => 1 + Math.floor(Math.random() * 6));
     },
 };
 
-var app = express();
+const app = express();
 app.use('/', graphqlHTTP({
     schema: schema,
     rootValue: root,
