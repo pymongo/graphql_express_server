@@ -5,11 +5,15 @@ fetch('http://localhost:4000/', {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-        query: "query($num: Int!) { rollDices(numDice: $num) }",
+        // use alias syntax to roll 2 and 3 dices in same query(use differnt arg on same query function in onetime)
+        query: `query($dices_count: Int!) {
+            rollTwoDices: rollDices(numDice: 2)
+            rollThreeDices: rollDices(numDice: $dices_count)
+        }`,
         variables: {
-            num: 3
+            dices_count: 3
         }
     })
 })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => console.info(JSON.stringify(data, null, 4)));

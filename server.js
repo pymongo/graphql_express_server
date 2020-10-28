@@ -12,7 +12,7 @@ const schema = buildSchema(`
 // The root provides a resolver function for each API endpoint
 const root = {
     // ES6 destructuring assignment, (args) -> ({numDice}), ignore all fileds form args except numDice
-    rollDices: ({numDice}) => {
+    rollDices({numDice}) {
         console.info("[Query] rollDices");
         return [...Array(numDice).keys()].map(_ => 1 + Math.floor(Math.random() * 6));
     },
