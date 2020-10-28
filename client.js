@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch from "node-fetch"; // nodejs isn't impl in browser_js's fetch in stdlib
 fetch('http://localhost:4000/', {
     method: 'POST',
     headers: {
@@ -12,4 +12,4 @@ fetch('http://localhost:4000/', {
     })
 })
     .then(res => res.json())
-    .then(data => console.log('data returned:', data));
+    .then(data => console.info(JSON.stringify(data, null, 4)));

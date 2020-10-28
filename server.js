@@ -1,19 +1,20 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
-import { buildSchema } from 'graphql';
+import { buildSchema, graphql } from 'graphql';
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
-  type Query {
-    rollDices(numDice: Int!): [Int!]
-  }
+    type Query {
+        rollDices(numDice: Int!): [Int!]
+    }
 `);
 
 // The root provides a resolver function for each API endpoint
 const root = {
-    rollDices: (args) => {
-        console.info("[Query] rollDices", args);
-        return [...Array(args.numDice).keys()].map(_ => 1 + Math.floor(Math.random() * 6));
+    // ES6 destructuring assignment, (args) -> ({numDice}), ignore all fileds form args except numDice
+    rollDices: ({numDice}) => {
+        console.info("[Query] rollDices");
+        return [...Array(numDice).keys()].map(_ => 1 + Math.floor(Math.random() * 6));
     },
 };
 
