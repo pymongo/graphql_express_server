@@ -10,6 +10,12 @@ fetch('http://localhost:4000/', {
             # __typename
             rollTwoDices: rollDices(numDice: 2)
             rollThreeDices: rollDices(numDice: $dices_count)
+            twitter {
+                queryOnlineUsers
+            }
+            youtube {
+                queryOnlineUsers
+            }
         }`,
         variables: {
             dices_count: 3
