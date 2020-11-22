@@ -7,10 +7,13 @@ function random_int(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-async function graphql_req_with_var(query, variables) {
+async function graphql_req_with_var(query, variables=null, jwt="") {
     const response = await fetch('https://business-stg.igrow.ai/api', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-JWT': jwt
+        },
         body: JSON.stringify({query, variables})
     });
     const json = await response.json();
@@ -21,7 +24,6 @@ async function graphql_req_with_var(query, variables) {
 const sign_up_query = String.raw`
 mutation($email: String!) {
     signUp(
-        isDisableRecaptcha: true
         recaptcha: ""
         email: $email
         password: "12!@qwQW"
@@ -32,6 +34,23 @@ mutation($email: String!) {
 `;
 
 const email = `z${random_int(0, 1000000)}@z.z`;
-console.info(`email=${email}`);
-const response = await graphql_req_with_var(sign_up_query, {email: email});
-assert(response.data);
+console.info(`email = ${email}`);
+
+const sign_up_response = await graphql_req_with_var(sign_up_query, {email: email});
+assert(sign_up_response.data);
+const jwt = sign_up_response.data.signUp.jwt;
+console.info(`jwt = ${jwt}`);
+
+const login_query = String.raw`
+mutation($email: String!) {
+    login(
+        email: $email
+        password: "12!@qwQW"
+    ) {
+        jwt
+    }
+}
+`;
+
+const login_response = await graphql_req_with_var(login_query, {email: email});
+assert(login_response.data);
